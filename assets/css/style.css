@@ -1,0 +1,459 @@
+/* assets/css/style.css */
+
+/* গুগল ফন্ট যুক্ত করা হলো (বোল্ড এবং প্রিমিয়াম লুকের জন্য) */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap');
+
+:root {
+    --bg-dark: #0a0a0c;         /* একদম ডিপ ডার্ক ব্যাকগ্রাউন্ড */
+    --text-light: #ffffff;      /* সাদা টেক্সট */
+    --accent-orange: #ff7300;   /* আপনার পছন্দের অরেঞ্জ কালার */
+    --accent-glow: 0 0 20px rgba(255, 115, 0, 0.6); /* অরেঞ্জ গ্লো ইফেক্ট */
+    --glass-bg: rgba(255, 255, 255, 0.05); /* কাঁচের মতো স্বচ্ছ ব্যাকগ্রাউন্ড */
+    --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+    overflow-x: hidden; /* ডানে-বামে স্ক্রল বন্ধ করার জন্য */
+}
+
+a {
+    text-decoration: none;
+    color: var(--text-light);
+    transition: 0.3s ease;
+}
+
+ul {
+    list-style: none;
+}
+
+/* =========================================
+   গ্লাসমরফিজম (Glassmorphism) ক্লাস
+========================================= */
+.glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: var(--glass-border);
+    border-radius: 15px;
+}
+
+/* =========================================
+   স্টিকি ন্যাভবার (Sticky Navbar)
+========================================= */
+header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    padding: 20px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: 0.4s ease;
+}
+
+/* স্ক্রল করার পর ন্যাভবারে গ্লাস ইফেক্ট যোগ করার জন্য (JS দিয়ে অ্যাড করা হবে) */
+header.scrolled {
+    background: rgba(10, 10, 12, 0.8);
+    backdrop-filter: blur(15px);
+    padding: 15px 5%;
+    border-bottom: var(--glass-border);
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logo span {
+    color: var(--accent-orange);
+}
+
+.logo-dot {
+    width: 10px;
+    height: 10px;
+    background: var(--accent-orange);
+    border-radius: 50%;
+    box-shadow: var(--accent-glow);
+}
+
+.nav-links {
+    display: flex;
+    gap: 30px;
+}
+
+.nav-links a {
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.nav-links a:hover {
+    color: var(--accent-orange);
+    text-shadow: var(--accent-glow);
+}
+
+.nav-icons {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.nav-icons i {
+    font-size: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.nav-icons i:hover {
+    color: var(--accent-orange);
+    transform: scale(1.2);
+}
+
+/* কার্ট ব্যাজ (Cart Badge) */
+.cart-icon-wrapper {
+    position: relative;
+}
+
+.cart-badge {
+    position: absolute;
+    top: -8px;
+    right: -10px;
+    background: var(--accent-orange);
+    color: #fff;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 50%;
+    box-shadow: var(--accent-glow);
+}
+
+
+/* =========================================
+   হিরো সেকশন (Hero Section Styles)
+========================================= */
+.hero-section {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 8%;
+    margin-top: 60px;
+}
+
+.hero-content {
+    flex: 1;
+}
+
+.hero-content h1 {
+    font-size: 65px;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+.highlight {
+    color: var(--accent-orange);
+    font-style: italic;
+    text-shadow: var(--accent-glow);
+}
+
+.hero-content p {
+    font-size: 16px;
+    color: #aaaaaa;
+    margin-bottom: 40px;
+    max-width: 80%;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 20px;
+}
+
+/* বাটন ডিজাইন */
+.btn {
+    padding: 12px 30px;
+    border-radius: 30px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+    text-transform: uppercase;
+    transition: 0.3s ease;
+}
+
+.btn-primary {
+    background: var(--accent-orange);
+    color: #fff;
+    box-shadow: var(--accent-glow);
+    border: none;
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 30px rgba(255, 115, 0, 0.8);
+}
+
+.btn-glass {
+    background: var(--glass-bg);
+    border: var(--glass-border);
+    backdrop-filter: blur(10px);
+    color: #fff;
+}
+
+.btn-glass:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-3px);
+}
+
+/* ডানপাশের গ্লোয়িং ইমেজ সেকশন */
+.hero-image-wrapper {
+    flex: 1;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.glow-shape {
+    width: 250px;
+    height: 250px;
+    background: var(--accent-orange);
+    border-radius: 30px;
+    transform: rotate(45deg);
+    box-shadow: 0 0 80px rgba(255, 115, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: pulseGlow 3s infinite alternate;
+}
+
+.glow-shape span {
+    transform: rotate(-45deg);
+    font-size: 60px;
+    font-weight: 800;
+    color: #111;
+}
+
+.floating-product {
+    position: absolute;
+    width: 120%;
+    max-width: 600px;
+    transform: rotate(-15deg);
+    animation: float 4s ease-in-out infinite;
+    filter: drop-shadow(0 20px 30px rgba(0,0,0,0.8));
+}
+
+@keyframes float {
+    0% { transform: translateY(0) rotate(-15deg); }
+    50% { transform: translateY(-20px) rotate(-10deg); }
+    100% { transform: translateY(0) rotate(-15deg); }
+}
+
+@keyframes pulseGlow {
+    0% { box-shadow: 0 0 50px rgba(255, 115, 0, 0.3); }
+    100% { box-shadow: 0 0 100px rgba(255, 115, 0, 0.7); }
+}
+
+/* =========================================
+   প্রোডাক্ট গ্রিড (Product Cards)
+========================================= */
+.trending-products {
+    padding: 80px 8%;
+}
+
+.section-title {
+    font-size: 36px;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+.product-card {
+    padding: 20px;
+    text-align: center;
+    transition: 0.4s ease;
+    overflow: hidden;
+}
+
+.product-card:hover {
+    transform: translateY(-10px);
+    border-color: rgba(255, 115, 0, 0.4);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.card-image-wrapper {
+    height: 220px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* প্রোডাক্ট কার্ডের ভেতরের থ্রিডি হোভার ইফেক্ট */
+.card-image {
+    max-width: 90%;
+    max-height: 90%;
+    transition: 0.5s ease;
+    filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5));
+}
+
+.product-card:hover .card-image {
+    transform: scale(1.15) translateY(-15px) rotate(5deg);
+}
+
+.card-info h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.card-info .price {
+    color: var(--accent-orange);
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.add-to-cart-btn {
+    width: 100%;
+}
+
+
+
+/* =========================================
+   অফক্যানভাস কার্ট ডিজাইন (Offcanvas Cart)
+========================================= */
+.cart-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    z-index: 1001;
+    visibility: hidden;
+    opacity: 0;
+    transition: 0.3s ease;
+}
+
+.cart-overlay.active {
+    visibility: visible;
+    opacity: 1;
+}
+
+.offcanvas-cart {
+    position: fixed;
+    top: 0;
+    right: -450px; /* স্ক্রিনের বাইরে লুকানো থাকবে */
+    width: 400px;
+    height: 100vh;
+    background: rgba(10, 10, 12, 0.95);
+    z-index: 1002;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    /* দারুণ বাউন্স অ্যানিমেশন */
+    transition: right 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+    border-radius: 20px 0 0 20px;
+    border-left: var(--glass-border);
+}
+
+.offcanvas-cart.active {
+    right: 0; /* স্ক্রিনে ঢুকে আসবে */
+}
+
+.cart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: var(--glass-border);
+    padding-bottom: 20px;
+}
+
+.close-cart {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.close-cart:hover {
+    color: var(--accent-orange);
+    transform: rotate(90deg) scale(1.2);
+}
+
+.cart-items {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 0;
+}
+
+/* কার্টের ভেতরের আইটেমের ডিজাইন */
+.cart-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: rgba(255,255,255,0.02);
+    padding: 15px;
+    border-radius: 15px;
+    margin-bottom: 15px;
+    border: var(--glass-border);
+}
+
+.cart-item img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+}
+
+.item-details h4 {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.item-details p {
+    color: var(--accent-orange);
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.remove-item {
+    background: none;
+    border: none;
+    color: #ff4757;
+    margin-left: auto;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.remove-item:hover {
+    transform: scale(1.2);
+}
+
+.cart-footer {
+    border-top: var(--glass-border);
+    padding-top: 20px;
+}
+
