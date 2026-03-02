@@ -148,3 +148,32 @@ function resetInterval() {
 if(slides.length > 0) {
     startSlider();
 }
+
+//
+
+
+// ==========================================
+// Swiper Slider Initialization (Daraz Style)
+// ==========================================
+document.addEventListener('DOMContentLoaded', function() {
+    var swiper = new Swiper(".mySwiper", {
+        loop: true, // একটানা ঘুরতে থাকবে
+        autoplay: {
+            delay: 4000, // ৪ সেকেন্ড পর পর স্লাইড হবে
+            disableOnInteraction: false, // ইউজার টাচ করলেও অটো স্লাইড বন্ধ হবে না
+        },
+        pagination: {
+            el: ".swiper-pagination",
+            clickable: true,
+            dynamicBullets: true, // ডটগুলো সুন্দর দেখাবে
+        },
+        navigation: {
+            nextEl: ".swiper-button-next",
+            prevEl: ".swiper-button-prev",
+        },
+        effect: "fade", // ফেড ইফেক্ট (ঐচ্ছিক, সরাতে চাইলে এই লাইন মুছতে পারেন)
+        fadeEffect: {
+            crossFade: true
+        }
+    });
+});
