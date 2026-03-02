@@ -38,6 +38,7 @@ $cart_count = isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0;
         <li><a href="contact.php">Contact</a></li>
     </ul>
 
+
     <div class="nav-icons">
         <i class="fa-solid fa-magnifying-glass"></i>
         <a href="wishlist.php"><i class="fa-regular fa-heart"></i></a>
@@ -48,7 +49,10 @@ $cart_count = isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0;
         </div>
 
         <a href="profile.php"><i class="fa-regular fa-user"></i></a>
+
+        <i class="fa-solid fa-bars mobile-menu-btn" onclick="toggleMobileMenu()"></i>
     </div>
+   
 </header>
 
 <script>

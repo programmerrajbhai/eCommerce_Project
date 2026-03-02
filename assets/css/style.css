@@ -457,3 +457,535 @@ header.scrolled {
     padding-top: 20px;
 }
 
+
+
+
+/* =========================================
+   মোবাইল রেসপন্সিভ (Media Queries)
+========================================= */
+@media (max-width: 768px) {
+    header { padding: 15px 5%; }
+    .nav-links { display: none; } /* আপাতত মেনু লুকানো, পরে হ্যামবার্গার যোগ করব */
+    .nav-icons { gap: 15px; }
+    
+    .hero-section { flex-direction: column; text-align: center; margin-top: 100px; gap: 40px; }
+    .hero-content h1 { font-size: 45px; }
+    .hero-content p { margin: 0 auto 30px; }
+    .hero-buttons { justify-content: center; }
+    .glow-shape { width: 180px; height: 180px; }
+    
+    .offcanvas-cart { width: 100%; right: -100%; border-radius: 0; }
+    .product-grid { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; }
+    .card-image-wrapper { height: 160px; }
+    .card-info h3 { font-size: 14px; }
+    .card-info .price { font-size: 16px; }
+}
+
+
+
+/* =========================================
+   প্রোডাক্ট ডিটেইলস পেজ (Product Details)
+========================================= */
+.product-details-section {
+    padding: 120px 8% 80px;
+    min-height: 85vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.details-container {
+    display: flex;
+    gap: 60px;
+    padding: 50px;
+    max-width: 1100px;
+    width: 100%;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.details-image-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+
+/* ইমেজের পেছনের গ্লো */
+.glow-circle {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background: var(--accent-orange);
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.6;
+    z-index: 0;
+}
+
+.details-image {
+    max-width: 100%;
+    width: 350px;
+    filter: drop-shadow(0 20px 30px rgba(0,0,0,0.8));
+    animation: float 4s ease-in-out infinite;
+    z-index: 1; /* গ্লো এর ওপরে রাখার জন্য */
+}
+
+.details-info {
+    flex: 1.2;
+    z-index: 1;
+}
+
+.details-info h1 {
+    font-size: 40px;
+    margin-bottom: 10px;
+    line-height: 1.2;
+}
+
+.category-badge {
+    display: inline-block;
+    background: rgba(255, 115, 0, 0.2);
+    color: var(--accent-orange);
+    border: 1px solid var(--accent-orange);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: bold;
+}
+
+.details-info .price {
+    font-size: 36px;
+    color: var(--accent-orange);
+    margin-bottom: 20px;
+    text-shadow: var(--accent-glow);
+}
+
+.details-info .description {
+    color: #cccccc;
+    line-height: 1.8;
+    margin-bottom: 25px;
+    font-size: 15px;
+}
+
+.stock-info {
+    margin-bottom: 30px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+/* ডিটেইলস পেজের মোবাইল রেসপন্সিভ (Media Queries এর ভেতরে যোগ করতে পারেন) */
+@media (max-width: 768px) {
+    .details-container { flex-direction: column; text-align: center; padding: 30px 20px; gap: 30px; }
+    .action-buttons { justify-content: center; flex-wrap: wrap; }
+    .details-image { width: 250px; }
+    .details-info h1 { font-size: 28px; }
+}
+
+
+
+
+
+/* =========================================
+   চেকআউট পেজ ডিজাইন (Checkout Forms)
+========================================= */
+.checkout-section {
+    padding: 100px 8% 80px;
+    min-height: 80vh;
+}
+
+.checkout-container {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.checkout-form {
+    flex: 1.5;
+    padding: 40px;
+}
+
+.order-summary {
+    flex: 1;
+    padding: 40px;
+    position: sticky;
+    top: 100px; /* স্ক্রল করার সময় সামারিটা সাথে সাথে নিচে নামবে */
+}
+
+/* ফর্ম এলিমেন্ট ডিজাইন */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #cccccc;
+    letter-spacing: 0.5px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 14px 20px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border-radius: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    transition: 0.3s ease;
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--accent-orange);
+    background: rgba(255, 255, 255, 0.07);
+    box-shadow: 0 0 15px rgba(255, 115, 0, 0.2);
+}
+
+select.form-control option {
+    background: var(--bg-dark); /* সিলেক্ট অপশনের ড্রপডাউন ডার্ক রাখার জন্য */
+    color: #fff;
+}
+
+textarea.form-control {
+    resize: vertical;
+}
+
+/* চেকআউটের মোবাইল রেসপন্সিভ (আপনার আগের @media ব্লকের ভেতর এটা যোগ করতে পারেন) */
+@media (max-width: 768px) {
+    .checkout-container { flex-direction: column; }
+    .checkout-form, .order-summary { width: 100%; padding: 25px; }
+}
+
+
+
+
+
+/* =========================================
+   ই-কমার্স স্লাইডার ডিজাইন (Hero Slider)
+========================================= */
+.ecommerce-slider {
+    position: relative;
+    width: 100%;
+    height: 80vh; /* স্লাইডারের উচ্চতা */
+    margin-top: 80px;
+    overflow: hidden;
+    background: var(--bg-dark);
+}
+
+.slides-container {
+    width: 100%;
+    height: 100%;
+}
+
+.slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10%;
+    opacity: 0;
+    transition: opacity 0.8s ease-in-out;
+    z-index: 1;
+}
+
+.slide.active {
+    opacity: 1;
+    z-index: 2;
+}
+
+.slide-text {
+    flex: 1;
+    transform: translateY(30px);
+    transition: 0.8s ease;
+}
+
+.slide.active .slide-text {
+    transform: translateY(0);
+}
+
+.slide-text h3 {
+    color: #aaa;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+}
+
+.slide-text h1 {
+    font-size: 55px;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 20px;
+}
+
+.slide-text p {
+    font-size: 16px;
+    color: #cccccc;
+    margin-bottom: 30px;
+    max-width: 80%;
+}
+
+.slide-image {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    position: relative;
+}
+
+.slide-image img {
+    max-width: 400px;
+    border-radius: 20px;
+    filter: drop-shadow(0 20px 30px rgba(0,0,0,0.5));
+    animation: float 4s ease-in-out infinite;
+}
+
+/* স্লাইডার বাটন */
+.slider-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--glass-bg);
+    border: var(--glass-border);
+    color: #fff;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 10;
+    backdrop-filter: blur(10px);
+    transition: 0.3s;
+}
+
+.slider-btn:hover {
+    background: var(--accent-orange);
+    box-shadow: var(--accent-glow);
+}
+
+.slider-btn.prev { left: 30px; }
+.slider-btn.next { right: 30px; }
+
+/* =========================================
+   ক্যাটাগরি সেকশন (Category Row)
+========================================= */
+.categories-section {
+    padding: 60px 8% 20px;
+    text-align: center;
+}
+
+.category-row {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.category-box {
+    width: 150px;
+    padding: 20px;
+    text-align: center;
+    border-radius: 15px;
+    transition: 0.3s;
+}
+
+.category-box i {
+    font-size: 30px;
+    color: var(--text-light);
+    margin-bottom: 15px;
+    transition: 0.3s;
+}
+
+.category-box:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-orange);
+}
+
+.category-box:hover i {
+    color: var(--accent-orange);
+    text-shadow: var(--accent-glow);
+}
+
+/* মোবাইলের জন্য স্লাইডার ফিক্স */
+@media (max-width: 768px) {
+    .slide { flex-direction: column; text-align: center; padding: 40px 5%; justify-content: center; gap: 30px; }
+    .slide-text h1 { font-size: 35px; }
+    .slide-image img { max-width: 250px; }
+    .slider-btn { display: none; } /* মোবাইলে বাটন হাইড করে দিলাম */
+}
+
+
+/* =========================================
+   স্লাইডারের স্মুথ অ্যানিমেশন (Slider Animation)
+========================================= */
+.ecommerce-slider {
+    position: relative;
+    width: 100%;
+    height: 85vh;
+    margin-top: 70px;
+    overflow: hidden;
+    background: var(--bg-dark);
+}
+
+.slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10%;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.8s ease, transform 0.8s ease;
+    transform: scale(1.05); /* একটু জুম হয়ে থাকবে */
+    z-index: 1;
+}
+
+.slide.active {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1); /* স্মুথলি জুম আউট হয়ে স্ক্রিনে বসবে */
+    z-index: 2;
+}
+
+/* =========================================
+   মোবাইল হ্যামবার্গার মেনু আইকন (Mobile Menu Icon)
+========================================= */
+.mobile-menu-btn {
+    display: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #fff;
+    transition: 0.3s;
+}
+
+.mobile-menu-btn:hover {
+    color: var(--accent-orange);
+}
+
+/* =========================================
+   ১০০% মোবাইল রেসপন্সিভ (Media Queries)
+========================================= */
+@media (max-width: 991px) {
+    .ecommerce-slider { height: 70vh; }
+    .slide-text h1 { font-size: 45px; }
+    .slide-image img { max-width: 320px; }
+}
+
+@media (max-width: 768px) {
+    /* হেডার এবং মেনু */
+    header { padding: 15px 5%; }
+    
+    .mobile-menu-btn { display: block; z-index: 1001; }
+    
+    .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 250px;
+        height: 100vh;
+        background: rgba(10, 10, 12, 0.98);
+        backdrop-filter: blur(15px);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 30px;
+        transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        z-index: 1000;
+        border-left: var(--glass-border);
+    }
+
+    .nav-links.active { right: 0; }
+
+    /* স্লাইডার মোবাইলের জন্য (Text & Image Stack) */
+    .ecommerce-slider { 
+        height: auto; 
+        min-height: 80vh; 
+        padding: 100px 0 50px; 
+    }
+    
+    .slide {
+        flex-direction: column-reverse; /* মোবাইলে ইমেজ উপরে, টেক্সট নিচে থাকবে */
+        text-align: center;
+        padding: 20px 5%;
+        justify-content: center;
+        gap: 20px;
+    }
+    
+    .slide-text { transform: translateY(0); }
+    .slide-text h1 { font-size: 35px; line-height: 1.2; margin-bottom: 15px; }
+    .slide-text p { max-width: 100%; margin: 0 auto 20px; font-size: 14px; }
+    .slide-image img { max-width: 250px; margin-bottom: 10px; }
+    
+    .slider-btn { display: none; } /* মোবাইলে বাটন হাইড করে অটো স্লাইড হবে */
+
+    /* প্রোডাক্ট গ্রিড (২ কলাম) */
+    .product-grid { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; }
+    .card-image-wrapper { height: 160px; }
+    .card-info h3 { font-size: 14px; }
+    .card-info .price { font-size: 16px; margin-bottom: 10px; }
+    .btn-glass { padding: 8px 15px; font-size: 12px; }
+
+    /* ক্যাটাগরি সেকশন */
+    .category-box { width: 120px; padding: 15px; }
+    .category-box i { font-size: 24px; }
+    .category-box h4 { font-size: 14px; }
+}
+
+@media (max-width: 480px) {
+    /* একদম ছোট স্ক্রিনের (যেমন আইফোন SE) জন্য */
+    .slide-text h1 { font-size: 28px; }
+    .slide-image img { max-width: 200px; }
+    .product-grid { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+}
+
+
+/* =========================================
+   স্লাইডার নেভিগেশন ডটস (Slider Dots)
+========================================= */
+.slider-dots {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    z-index: 10;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: 0.4s ease;
+}
+
+.dot.active, .dot:hover {
+    width: 30px;
+    background: var(--accent-orange);
+    border-radius: 10px;
+    box-shadow: var(--accent-glow);
+}
