@@ -2,7 +2,7 @@
 // product_details.php
 require_once 'includes/header.php';
 
-// URL থেকে প্রোডাক্ট আইডি নেওয়া (যেমন: product_details.php?id=1)
+// URL থেকে প্রোডাক্ট আইডি নেওয়া 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
 // ডেটাবেস থেকে প্রোডাক্টের তথ্য নিয়ে আসা
@@ -23,24 +23,27 @@ if (!$product) {
 // মেইন ইমেজ সোর্স ঠিক করা
 $main_img = filter_var($product['image'], FILTER_VALIDATE_URL) ? $product['image'] : 'assets/images/products/'.$product['image'];
 
-// গ্যালারি ইমেজগুলোকে কমা দিয়ে ভাগ করে অ্যারে বানানো
-$gallery_images = [];
+// গ্যালারি ইমেজ প্রসেসিং (ডাবল ইমেজ ফিক্স)
+$gallery_images = [$main_img]; // প্রথমেই মেইন ইমেজ রাখলাম
+
 if (!empty($product['gallery'])) {
     $gallery_links = explode(',', $product['gallery']);
     foreach ($gallery_links as $link) {
-        $link = trim($link); // লিংকের দুপাশের স্পেস রিমুভ করা
+        $link = trim($link);
         if (!empty($link)) {
-            $gallery_images[] = filter_var($link, FILTER_VALIDATE_URL) ? $link : 'assets/images/products/'.$link;
+            $img_url = filter_var($link, FILTER_VALIDATE_URL) ? $link : 'assets/images/products/'.$link;
+            // যদি ইমেজটি আগে থেকে অ্যারেতে না থাকে, তবেই যোগ করবে
+            if (!in_array($img_url, $gallery_images)) {
+                $gallery_images[] = $img_url;
+            }
         }
     }
 }
-// মেইন ইমেজটাকেও গ্যালারির প্রথমে রাখা হলো
-array_unshift($gallery_images, $main_img);
 ?>
 
 <style>
 /* =========================================
-   প্রোডাক্ট গ্যালারি স্লাইডার ডিজাইন
+   প্রোডাক্ট গ্যালারি স্লাইডার ডিজাইন (HD Fix)
 ========================================= */
 .gallery-wrapper {
     flex: 1;
@@ -55,20 +58,40 @@ array_unshift($gallery_images, $main_img);
 .main-img-container {
     width: 100%;
     height: 400px;
-    background: rgba(255,255,255,0.05);
+    background: rgba(255,255,255,0.03);
     border-radius: 15px;
     display: flex;
     justify-content: center;
     align-items: center;
     border: var(--glass-border);
-    overflow: hidden;
+    position: relative;
+    padding: 20px; /* ভেতরে একটু গ্যাপ রাখার জন্য */
 }
 
+/* পেছনের গ্লো ইফেক্ট */
+.main-img-container::before {
+    content: '';
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background: var(--accent-orange);
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.2; /* গ্লো একটু কমানো হলো যাতে ছবি ক্লিয়ার থাকে */
+    z-index: 0;
+}
+
+/* 🚀 HD ইমেজ ফিক্স: ঘোলা ও বাঁকা হওয়া বন্ধ করা হলো */
 .main-img-container img {
-    max-width: 90%;
-    max-height: 90%;
-    object-fit: contain;
-    transition: 0.5s ease;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    object-fit: contain; /* ছবি যাতে কেটে না যায় */
+    z-index: 1;
+    animation: none !important; /* আগের বাঁকা অ্যানিমেশন বন্ধ */
+    transform: none !important; /* রোটেশন বন্ধ */
+    filter: none !important; /* ড্রপ-শ্যাডো বন্ধ যাতে ডার্ক ইমেজে সমস্যা না হয় */
 }
 
 /* নিচে ছোট থাম্বনেইল ছবিগুলো */
@@ -79,7 +102,7 @@ array_unshift($gallery_images, $main_img);
 
 .thumb-slide {
     width: 80px !important;
-    height: 100%;
+    height: 80px !important; /* একদম স্কয়ার সাইজ */
     border-radius: 10px;
     overflow: hidden;
     cursor: pointer;
@@ -89,14 +112,21 @@ array_unshift($gallery_images, $main_img);
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 4px; /* বর্ডারের ভেতরে হালকা গ্যাপ */
 }
 
+/* থাম্বনেইল ইমেজ ফিক্স */
 .thumb-slide img {
-    max-width: 90%;
-    max-height: 90%;
-    object-fit: contain;
-    opacity: 0.6;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
+    object-fit: cover; /* বক্স পুরোপুরি ফিল করার জন্য */
+    border-radius: 5px;
+    opacity: 0.5;
     transition: 0.3s;
+    animation: none !important;
+    transform: none !important;
 }
 
 /* অ্যাকটিভ থাম্বনেইলের স্টাইল */
@@ -106,7 +136,15 @@ array_unshift($gallery_images, $main_img);
 }
 .thumb-slide.swiper-slide-thumb-active img, .thumb-slide:hover img {
     opacity: 1;
-    transform: scale(1.1);
+}
+
+/* ডিসক্রিপশন টেক্সট ফিক্স (যাতে লাইনগুলো গায়ে গায়ে না লেগে থাকে) */
+.details-info .description {
+    color: #cccccc;
+    line-height: 1.8;
+    margin-bottom: 25px;
+    font-size: 15px;
+    white-space: pre-wrap; /* ইউজারের দেওয়া স্পেস ও এন্টার ঠিক রাখার জন্য */
 }
 </style>
 
@@ -118,7 +156,7 @@ array_unshift($gallery_images, $main_img);
                 <div class="swiper-wrapper">
                     <?php foreach($gallery_images as $img): ?>
                         <div class="swiper-slide main-img-container">
-                            <img src="<?= $img ?>" alt="<?= $product['title'] ?>">
+                            <img src="<?= $img ?>" alt="<?= htmlspecialchars($product['title']) ?>">
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -138,12 +176,12 @@ array_unshift($gallery_images, $main_img);
         </div>
 
         <div class="details-info">
-            <h1><?= $product['title'] ?></h1>
-            <span class="category-badge"><?= $product['category'] ?></span>
+            <h1><?= htmlspecialchars($product['title']) ?></h1>
+            <span class="category-badge"><?= htmlspecialchars($product['category']) ?></span>
             
             <h2 class="price">৳ <?= number_format($product['price'], 2) ?></h2>
             
-            <p class="description"><?= nl2br(htmlspecialchars($product['description'])) ?></p>
+            <div class="description"><?= htmlspecialchars($product['description']) ?></div>
             
             <p class="stock-info">
                 <?php if($product['stock'] > 0): ?>
@@ -170,20 +208,19 @@ array_unshift($gallery_images, $main_img);
 
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    // থাম্বনেইল স্লাইডার ইনিশিয়ালাইজ
     var thumbSwiper = new Swiper(".thumbProductSwiper", {
         spaceBetween: 15,
-        slidesPerView: "auto", // কন্টেন্ট অনুযায়ী সাইজ নিবে
+        slidesPerView: 5, /* ৫টি থাম্বনেইল একসাথে দেখাবে */
         freeMode: true,
         watchSlidesProgress: true,
     });
     
-    // মেইন ইমেজ স্লাইডার ইনিশিয়ালাইজ (থাম্বনেইলের সাথে কানেক্ট করা)
     var mainSwiper = new Swiper(".mainProductSwiper", {
         spaceBetween: 10,
-        effect: "fade", // ছবি চেঞ্জ হওয়ার সময় ফেড ইফেক্ট
+        effect: "fade", 
+        fadeEffect: { crossFade: true }, // এটি ছবির ওভারল্যাপিং বন্ধ করবে
         thumbs: {
-            swiper: thumbSwiper, // এই মেইন স্লাইডারকে থাম্বনেইলের সাথে লিংক করে দেওয়া হলো
+            swiper: thumbSwiper, 
         },
     });
 });
