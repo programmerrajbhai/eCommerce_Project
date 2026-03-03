@@ -1115,3 +1115,73 @@ textarea.form-control {
         display: none !important; 
     }
 }
+
+
+
+
+
+/* =========================================
+   Mobile View Product Card Fix (100% Responsive)
+========================================= */
+@media (max-width: 768px) {
+    /* Grid system - Mobile e 2 ta kore card dekhabe */
+    .product-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important; 
+        gap: 12px !important;
+        padding: 5px !important;
+    }
+    
+    .product-card {
+        border-radius: 12px !important;
+    }
+    
+    /* Image wrapper er height komanor jonne */
+    .card-image-wrapper {
+        height: 130px !important; 
+        padding: 10px !important;
+    }
+    
+    /* Text ebong details er padding komano */
+    .card-info {
+        padding: 12px !important;
+    }
+    
+    /* Product title jeno 1 line e thake ebong boro nam kete (..) dekhay */
+    .card-info h3 {
+        font-size: 13px !important;
+        margin-bottom: 6px !important;
+        white-space: nowrap !important; 
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+    
+    /* Price tag er size */
+    .card-info .price {
+        font-size: 15px !important;
+        margin-bottom: 10px !important;
+    }
+    
+    /* Add to cart button compact kora */
+    .add-to-cart-btn {
+        padding: 8px !important;
+        font-size: 12px !important;
+    }
+    
+    .add-to-cart-btn i {
+        font-size: 12px !important;
+    }
+}
+
+/* Ekdom choto mobile er jonno (iPhone SE, etc) */
+@media (max-width: 400px) {
+    .card-image-wrapper {
+        height: 110px !important;
+    }
+    .card-info h3 {
+        font-size: 12px !important;
+    }
+    .card-info .price {
+        font-size: 14px !important;
+    }
+}

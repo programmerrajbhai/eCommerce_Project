@@ -1,71 +1,114 @@
 <?php
 // admin/manage_products.php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 require_once 'includes/header.php';
 
-$message = '';
 $current_cat = isset($_GET['cat']) ? $_GET['cat'] : 'All';
 
+// =========================================
 // ১. Delete Logic
+// =========================================
 if (isset($_GET['delete'])) {
-    $id = $_GET['delete'];
-    $stmt = $pdo->prepare("DELETE FROM products WHERE id = ?");
-    $stmt->execute([$id]);
-    echo "<script>alert('Product Deleted Successfully!'); window.location.href='manage_products.php?cat=".$current_cat."';</script>";
+    try {
+        $id = intval($_GET['delete']);
+        $stmt = $pdo->prepare("DELETE FROM products WHERE id = ?");
+        if($stmt->execute([$id])){
+            $_SESSION['success'] = "Product Deleted Successfully!";
+        } else {
+            $_SESSION['error'] = "Failed to delete product!";
+        }
+    } catch(PDOException $e) {
+        $_SESSION['error'] = "Database Error: " . $e->getMessage();
+    }
+    header("Location: manage_products.php?cat=" . urlencode($current_cat));
     exit;
 }
 
+// =========================================
 // ২. Edit Category Logic
+// =========================================
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['edit_category_submit'])) {
-    $old_cat = $_POST['old_category'];
-    $new_cat = $_POST['new_category'];
-    $stmt = $pdo->prepare("UPDATE products SET category = ? WHERE category = ?");
-    $stmt->execute([$new_cat, $old_cat]);
-    echo "<script>alert('Category Renamed Successfully!'); window.location.href='manage_products.php?cat=".urlencode($new_cat)."';</script>";
+    try {
+        $old_cat = $_POST['old_category'];
+        $new_cat = trim($_POST['new_category']);
+        
+        if(!empty($new_cat)) {
+            $stmt = $pdo->prepare("UPDATE products SET category = ? WHERE category = ?");
+            $stmt->execute([$new_cat, $old_cat]);
+            $_SESSION['success'] = "Category Renamed Successfully!";
+            header("Location: manage_products.php?cat=" . urlencode($new_cat));
+            exit;
+        }
+    } catch(PDOException $e) {
+        $_SESSION['error'] = "Error: " . $e->getMessage();
+        header("Location: manage_products.php?cat=" . urlencode($current_cat));
+        exit;
+    }
+}
+
+// =========================================
+// ৩. Add Product Logic
+// =========================================
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_product'])) {
+    try {
+        $title = trim($_POST['title']);
+        $category = trim($_POST['category']);
+        $price = floatval($_POST['price']); // Data type fix
+        $stock = intval($_POST['stock']);   // Data type fix
+        $image = trim($_POST['image']); 
+        $description = trim($_POST['description']);
+
+        $gallery_arr = isset($_POST['gallery']) ? array_filter(array_map('trim', $_POST['gallery'])) : [];
+        $gallery_str = implode(',', $gallery_arr);
+
+        $stmt = $pdo->prepare("INSERT INTO products (title, category, price, stock, image, gallery, description) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        if ($stmt->execute([$title, $category, $price, $stock, $image, $gallery_str, $description])) {
+            $_SESSION['success'] = "Product Added Successfully!";
+        } else {
+            $_SESSION['error'] = "Failed to add product!";
+        }
+    } catch (PDOException $e) {
+        $_SESSION['error'] = "Database Error: " . $e->getMessage();
+    }
+    header("Location: manage_products.php?cat=" . urlencode($category));
     exit;
 }
 
-// ৩. Add Product Logic
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_product'])) {
-    $title = $_POST['title'];
-    $category = $_POST['category'];
-    $price = $_POST['price'];
-    $stock = $_POST['stock'];
-    $image = $_POST['image']; 
-    $description = $_POST['description'];
-
-    // ডাইনামিক গ্যালারি বক্সগুলো থেকে ডেটা নিয়ে কমা দিয়ে স্ট্রিং বানানো
-    $gallery_arr = isset($_POST['gallery']) ? array_filter(array_map('trim', $_POST['gallery'])) : [];
-    $gallery_str = implode(',', $gallery_arr);
-
-    $stmt = $pdo->prepare("INSERT INTO products (title, category, price, stock, image, gallery, description) VALUES (?, ?, ?, ?, ?, ?, ?)");
-    if ($stmt->execute([$title, $category, $price, $stock, $image, $gallery_str, $description])) {
-        echo "<script>alert('Product Added Successfully!'); window.location.href='manage_products.php?cat=".urlencode($category)."';</script>";
-        exit;
-    }
-}
-
-// ৪. Update Product Logic (Edit)
+// =========================================
+// ৪. Update Product Logic (Edit Fix)
+// =========================================
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_product'])) {
-    $id = $_POST['product_id'];
-    $title = $_POST['title'];
-    $category = $_POST['category'];
-    $price = $_POST['price'];
-    $stock = $_POST['stock'];
-    $image = $_POST['image']; 
-    $description = $_POST['description'];
+    try {
+        $id = intval($_POST['product_id']);
+        $title = trim($_POST['title']);
+        $category = trim($_POST['category']);
+        $price = floatval($_POST['price']); // 100% Fix for update bug
+        $stock = intval($_POST['stock']);   // 100% Fix for update bug
+        $image = trim($_POST['image']); 
+        $description = trim($_POST['description']);
 
-    // এডিট করার সময় ডাইনামিক বক্সের ডেটা সেভ করা
-    $gallery_arr = isset($_POST['gallery']) ? array_filter(array_map('trim', $_POST['gallery'])) : [];
-    $gallery_str = implode(',', $gallery_arr);
+        $gallery_arr = isset($_POST['gallery']) ? array_filter(array_map('trim', $_POST['gallery'])) : [];
+        $gallery_str = implode(',', $gallery_arr);
 
-    $stmt = $pdo->prepare("UPDATE products SET title=?, category=?, price=?, stock=?, image=?, gallery=?, description=? WHERE id=?");
-    if ($stmt->execute([$title, $category, $price, $stock, $image, $gallery_str, $description, $id])) {
-        echo "<script>alert('Product Updated Successfully!'); window.location.href='manage_products.php?cat=".urlencode($category)."';</script>";
-        exit;
+        $stmt = $pdo->prepare("UPDATE products SET title=?, category=?, price=?, stock=?, image=?, gallery=?, description=? WHERE id=?");
+        if ($stmt->execute([$title, $category, $price, $stock, $image, $gallery_str, $description, $id])) {
+            $_SESSION['success'] = "Product Updated Successfully!";
+        } else {
+            $err = $stmt->errorInfo();
+            $_SESSION['error'] = "Update Failed: " . $err[2];
+        }
+    } catch (PDOException $e) {
+        $_SESSION['error'] = "Database Error: " . $e->getMessage();
     }
+    header("Location: manage_products.php?cat=" . urlencode($category));
+    exit;
 }
 
+// =========================================
 // Data Fetching
+// =========================================
 $cat_stmt = $pdo->query("SELECT DISTINCT category FROM products WHERE category != ''");
 $categories = $cat_stmt->fetchAll(PDO::FETCH_COLUMN);
 
@@ -84,6 +127,8 @@ if (isset($_GET['edit_id'])) {
     $edit_data = $edit_stmt->fetch();
 }
 ?>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <style>
     .form-row { display: flex; gap: 20px; margin-bottom: 15px; flex-wrap: wrap; }
@@ -190,7 +235,10 @@ if (isset($_GET['edit_id'])) {
 
         <div class="form-group" style="margin-bottom: 15px;">
             <label>Main Image URL</label>
-            <input type="text" name="image" value="<?= $edit_data ? htmlspecialchars($edit_data['image']) : '' ?>" placeholder="Paste main image link here" required>
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <input type="text" name="image" id="main_image_input" value="<?= $edit_data ? htmlspecialchars($edit_data['image']) : '' ?>" placeholder="Paste main image link here" required oninput="previewImage(this.value)">
+                <img id="main_image_preview" src="<?= $edit_data ? htmlspecialchars($edit_data['image']) : 'https://via.placeholder.com/60x60?text=No+Img' ?>" alt="Preview" style="width: 60px; height: 60px; object-fit: cover; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);">
+            </div>
         </div>
 
         <div class="form-group" style="margin-bottom: 20px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; border: 1px dashed rgba(255,255,255,0.1);">
@@ -208,7 +256,6 @@ if (isset($_GET['edit_id'])) {
                     $existing_gallery = explode(',', $edit_data['gallery']);
                 }
                 
-                // যদি এডিট মোডে থাকে এবং আগের ছবি থাকে, সেগুলো রেন্ডার করবে
                 if(count($existing_gallery) > 0) {
                     foreach($existing_gallery as $g_link) {
                         if(trim($g_link) !== "") {
@@ -219,7 +266,6 @@ if (isset($_GET['edit_id'])) {
                         }
                     }
                 } else {
-                    // ডিফল্টভাবে ১টি ফাঁকা ইনপুট দেখাবে
                     echo '<div style="display:flex; gap:10px; margin-bottom:10px;" class="gallery-row">';
                     echo '<input type="text" name="gallery[]" placeholder="Paste gallery image link here">';
                     echo '<button type="button" class="btn-danger" style="padding: 0 15px;" onclick="this.parentElement.remove()"><i class="fa-solid fa-trash"></i></button>';
@@ -231,7 +277,7 @@ if (isset($_GET['edit_id'])) {
 
         <div class="form-group" style="margin-bottom: 20px;">
             <label>Product Description</label>
-            <textarea name="description" rows="3" required><?= $edit_data ? htmlspecialchars($edit_data['description']) : '' ?></textarea>
+            <textarea name="description" rows="4" required><?= $edit_data ? htmlspecialchars($edit_data['description']) : '' ?></textarea>
         </div>
 
         <div style="display: flex; gap: 15px;">
@@ -267,9 +313,9 @@ if (isset($_GET['edit_id'])) {
                 <?php foreach($products as $product): ?>
                     <?php $img_src = filter_var($product['image'], FILTER_VALIDATE_URL) ? $product['image'] : '../assets/images/products/'.$product['image']; ?>
                     <tr>
-                        <td><img src="<?= $img_src ?>" class="product-img-preview" alt="img"></td>
-                        <td style="font-weight: bold;"><?= $product['title'] ?></td>
-                        <td><span style="background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 15px; font-size: 12px;"><?= $product['category'] ?></span></td>
+                        <td><img src="<?= $img_src ?>" class="product-img-preview" alt="img" onerror="this.src='https://via.placeholder.com/50x50?text=No+Img'"></td>
+                        <td style="font-weight: bold;"><?= htmlspecialchars($product['title']) ?></td>
+                        <td><span style="background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 15px; font-size: 12px;"><?= htmlspecialchars($product['category']) ?></span></td>
                         <td style="color: var(--accent-orange); font-weight: bold;">৳ <?= number_format($product['price'], 2) ?></td>
                         <td>
                             <?php if($product['stock'] > 0): ?>
@@ -282,9 +328,9 @@ if (isset($_GET['edit_id'])) {
                             <a href="manage_products.php?cat=<?= urlencode($current_cat) ?>&edit_id=<?= $product['id'] ?>" class="btn-action">
                                 <i class="fa-solid fa-pen"></i> Edit
                             </a>
-                            <a href="manage_products.php?cat=<?= urlencode($current_cat) ?>&delete=<?= $product['id'] ?>" class="btn-danger" style="display:inline-block;" onclick="return confirm('Are you sure you want to delete this product?');">
+                            <button type="button" class="btn-danger" style="display:inline-block;" onclick="confirmDelete(<?= $product['id'] ?>, '<?= urlencode($current_cat) ?>')">
                                 <i class="fa-solid fa-trash"></i> Delete
-                            </a>
+                            </button>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -327,6 +373,51 @@ if (isset($_GET['edit_id'])) {
 </div>
 
 <script>
+    // Sweet Alert Success/Error Messages
+    <?php if(isset($_SESSION['success'])): ?>
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: '<?= $_SESSION['success'] ?>',
+            background: '#111',
+            color: '#fff',
+            confirmButtonColor: 'var(--accent-orange)'
+        });
+        <?php unset($_SESSION['success']); ?>
+    <?php endif; ?>
+
+    <?php if(isset($_SESSION['error'])): ?>
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: '<?= $_SESSION['error'] ?>',
+            background: '#111',
+            color: '#fff',
+            confirmButtonColor: '#e74c3c'
+        });
+        <?php unset($_SESSION['error']); ?>
+    <?php endif; ?>
+
+    // SweetAlert Delete Confirmation
+    function confirmDelete(id, cat) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            background: '#111',
+            color: '#fff',
+            confirmButtonColor: '#e74c3c',
+            cancelButtonColor: '#333',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = "manage_products.php?cat=" + cat + "&delete=" + id;
+            }
+        });
+    }
+
+    // Category Modal Functions
     function openModal(id) { document.getElementById(id).classList.add('active'); }
     function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
@@ -335,11 +426,11 @@ if (isset($_GET['edit_id'])) {
         if(catName !== "") {
             window.location.href = "manage_products.php?cat=" + encodeURIComponent(catName);
         } else {
-            alert("Please enter a category name!");
+            Swal.fire('Warning', 'Please enter a category name!', 'warning');
         }
     }
 
-    // ডাইনামিক গ্যালারি ফিল্ড অ্যাড করার ফাংশন (No Commas Needed!)
+    // Dynamic Gallery Input Field
     function addGalleryField() {
         const container = document.getElementById('gallery_container');
         const div = document.createElement('div');
@@ -349,6 +440,16 @@ if (isset($_GET['edit_id'])) {
             <button type="button" class="btn-danger" style="padding: 0 15px;" onclick="this.parentElement.remove()"><i class="fa-solid fa-trash"></i></button>
         `;
         container.appendChild(div);
+    }
+
+    // Live Image Preview Function
+    function previewImage(url) {
+        const img = document.getElementById('main_image_preview');
+        if(url.trim() !== '') {
+            img.src = url;
+        } else {
+            img.src = 'https://via.placeholder.com/60x60?text=No+Img';
+        }
     }
 </script>
 
